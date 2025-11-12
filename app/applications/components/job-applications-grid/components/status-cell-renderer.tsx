@@ -34,7 +34,7 @@ export const StatusCellRenderer = (
       >
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-white">
         {STATUS_OPTIONS.map((option) => (
           <SelectItem key={option} value={option}>
             <span

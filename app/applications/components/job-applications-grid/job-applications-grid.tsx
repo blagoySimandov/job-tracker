@@ -2,10 +2,11 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, ModuleRegistry } from "ag-grid-community";
+import { ColDef, ModuleRegistry, RowClassParams } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+import "./styles.css";
 import { Button } from "@/components/ui/button";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -21,6 +22,9 @@ import {
   NotesCellEditor,
   AddApplicationModal,
   ImprovementSidebar,
+  StatsHeader,
+  FilterBar,
+  FilterState,
 } from "./components";
 
 export const JobApplicationsGrid = () => {
@@ -31,6 +35,20 @@ export const JobApplicationsGrid = () => {
     isOpen: boolean;
     jobTitle?: string;
   }>({ isOpen: false });
+  const [filters, setFilters] = useState<FilterState>({
+    status: "all",
+    companySearch: "",
+  });
+
+  const filteredApplications = useMemo(() => {
+    return applications.filter((app) => {
+      const statusMatch = filters.status === "all" || app.status === filters.status;
+      const companyMatch =
+        !filters.companySearch ||
+        app.company.toLowerCase().includes(filters.companySearch.toLowerCase());
+      return statusMatch && companyMatch;
+    });
+  }, [applications, filters]);
 
   const handleAddApplication = useCallback(
     (link: string) => {
@@ -145,11 +163,20 @@ export const JobApplicationsGrid = () => {
     [handleStatusChange]
   );
 
+  const getRowClass = useCallback((params: RowClassParams<JobApplication>) => {
+    return params.data?.status || "";
+  }, []);
+
   return (
-    <div className="flex h-screen flex-col">
-      <div className="border-b p-4">
+    <div className="flex h-screen flex-col bg-neutral-50">
+      <div className="border-b border-neutral-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Job Applications</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-neutral-900">Job Applications</h1>
+            <p className="mt-1 text-sm text-neutral-600">
+              Track and manage your job applications
+            </p>
+          </div>
           <AddApplicationModal
             onAdd={handleAddApplication}
             isLoading={addMutation.isPending}
@@ -157,18 +184,27 @@ export const JobApplicationsGrid = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-4">
-        <div className="ag-theme-quartz h-full">
-          <AgGridReact
-            rowData={applications}
-            columnDefs={columnDefs}
-            context={context}
-            loading={isLoading}
-            domLayout="normal"
-            defaultColDef={{
-              resizable: true,
-            }}
-          />
+      <div className="flex-1 overflow-auto p-6">
+        <div className="mx-auto max-w-[1600px] space-y-6">
+          <StatsHeader applications={applications} />
+
+          <FilterBar onFilterChange={setFilters} />
+
+          <div className="ag-theme-quartz h-[600px] rounded-lg shadow-sm">
+            <AgGridReact
+              rowData={filteredApplications}
+              columnDefs={columnDefs}
+              context={context}
+              loading={isLoading}
+              domLayout="normal"
+              defaultColDef={{
+                resizable: true,
+              }}
+              getRowClass={getRowClass}
+              rowClass="ag-row-custom"
+              theme="legacy"
+            />
+          </div>
         </div>
       </div>
 
