@@ -59,7 +59,7 @@ export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
             <SelectTrigger className="w-[180px] bg-white">
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="all">All Statuses</SelectItem>
               {STATUS_OPTIONS.map((status) => (
                 <SelectItem key={status} value={status}>
