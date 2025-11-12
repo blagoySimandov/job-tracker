@@ -46,7 +46,8 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
 
   const filteredApplications = useMemo(() => {
     return applications.filter((app) => {
-      const statusMatch = filters.status === "all" || app.status === filters.status;
+      const statusMatch =
+        filters.status === "all" || app.status === filters.status;
       const companyMatch =
         !filters.companySearch ||
         app.company.toLowerCase().includes(filters.companySearch.toLowerCase());
@@ -58,26 +59,29 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
     (link: string) => {
       addMutation.mutate({ applicationLink: link });
     },
-    [addMutation]
+    [addMutation],
   );
 
   const handleStatusChange = useCallback(
     (id: string, status: ApplicationStatus) => {
       updateMutation.mutate({ id, updates: { status } });
     },
-    [updateMutation]
+    [updateMutation],
   );
 
   const handleNotesChange = useCallback(
     (id: string, notes: string) => {
       updateMutation.mutate({ id, updates: { notes } });
     },
-    [updateMutation]
+    [updateMutation],
   );
 
-  const handleShowImprovements = useCallback((jobTitle: string, improvementTips: string) => {
-    setSidebarState({ isOpen: true, jobTitle, improvementTips });
-  }, []);
+  const handleShowImprovements = useCallback(
+    (jobTitle: string, improvementTips: string) => {
+      setSidebarState({ isOpen: true, jobTitle, improvementTips });
+    },
+    [],
+  );
 
   const columnDefs = useMemo<ColDef<JobApplication>[]>(
     () => [
@@ -144,21 +148,26 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleShowImprovements(params.data?.jobTitle, params.data?.improvementTips)}
+            onClick={() =>
+              handleShowImprovements(
+                params.data?.jobTitle,
+                params.data?.improvementTips,
+              )
+            }
           >
             What to Improve
           </Button>
         ),
       },
     ],
-    [handleNotesChange, handleShowImprovements]
+    [handleNotesChange, handleShowImprovements],
   );
 
   const context = useMemo(
     () => ({
       onStatusChange: handleStatusChange,
     }),
-    [handleStatusChange]
+    [handleStatusChange],
   );
 
   const getRowClass = useCallback((params: RowClassParams<JobApplication>) => {
@@ -170,7 +179,9 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
       <div className="border-b border-neutral-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-neutral-900">Job Applications</h1>
+            <h1 className="text-3xl font-bold text-neutral-900">
+              Job Applications
+            </h1>
             <p className="mt-1 text-sm text-neutral-600">
               Track and manage your job applications
             </p>
