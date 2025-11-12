@@ -1,32 +1,54 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  createCV,
+  fetchCVs,
   fetchJobApplications,
   addJobApplication,
   updateJobApplication,
 } from "./services";
-import { AddApplicationInput, ApplicationStatus } from "./types";
+import { AddApplicationInput, ApplicationStatus, CV } from "./types";
 
-const QUERY_KEY = ["job-applications"];
+const CVS_QUERY_KEY = ["cvs"];
+const getApplicationsQueryKey = (cvId: string) => ["job-applications", cvId];
 
-export const useJobApplications = () => {
+export const useCVs = () => {
   return useQuery({
-    queryKey: QUERY_KEY,
-    queryFn: fetchJobApplications,
+    queryKey: CVS_QUERY_KEY,
+    queryFn: fetchCVs,
   });
 };
 
-export const useAddJobApplication = () => {
+export const useCreateCV = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: AddApplicationInput) => addJobApplication(input),
+    mutationFn: (cvData: Omit<CV, "id">) => createCV(cvData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: CVS_QUERY_KEY });
     },
   });
 };
 
-export const useUpdateJobApplication = () => {
+export const useJobApplications = (cvId: string) => {
+  return useQuery({
+    queryKey: getApplicationsQueryKey(cvId),
+    queryFn: () => fetchJobApplications(cvId),
+    enabled: !!cvId,
+  });
+};
+
+export const useAddJobApplication = (cvId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: AddApplicationInput) => addJobApplication(cvId, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: getApplicationsQueryKey(cvId) });
+    },
+  });
+};
+
+export const useUpdateJobApplication = (cvId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -36,9 +58,9 @@ export const useUpdateJobApplication = () => {
     }: {
       id: string;
       updates: { status?: ApplicationStatus; notes?: string };
-    }) => updateJobApplication(id, updates),
+    }) => updateJobApplication(cvId, id, updates),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: getApplicationsQueryKey(cvId) });
     },
   });
 };

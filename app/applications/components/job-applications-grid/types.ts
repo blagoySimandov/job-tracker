@@ -7,10 +7,18 @@ export type ApplicationStatus =
   | "Offer"
   | "Rejected";
 
+export interface CV {
+  id: string;
+  fileId: string;
+  name: string;
+  size: number;
+  storagePath: string;
+  uploadedAt: Timestamp;
+}
+
 export interface JobApplication {
   id: string;
-  cvUrl: string;
-  cvFileName: string;
+  cvId: string;
   jobTitle: string;
   company: string;
   applicationLink: string;

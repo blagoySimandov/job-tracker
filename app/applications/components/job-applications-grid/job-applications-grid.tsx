@@ -17,7 +17,6 @@ import {
 } from "./hooks";
 import { JobApplication, ApplicationStatus } from "./types";
 import {
-  CvCellRenderer,
   StatusCellRenderer,
   NotesCellEditor,
   AddApplicationModal,
@@ -27,10 +26,14 @@ import {
   FilterState,
 } from "./components";
 
-export const JobApplicationsGrid = () => {
-  const { data: applications = [], isLoading } = useJobApplications();
-  const addMutation = useAddJobApplication();
-  const updateMutation = useUpdateJobApplication();
+interface JobApplicationsGridProps {
+  cvId: string;
+}
+
+export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
+  const { data: applications = [], isLoading } = useJobApplications(cvId);
+  const addMutation = useAddJobApplication(cvId);
+  const updateMutation = useUpdateJobApplication(cvId);
   const [sidebarState, setSidebarState] = useState<{
     isOpen: boolean;
     jobTitle?: string;
@@ -77,12 +80,6 @@ export const JobApplicationsGrid = () => {
 
   const columnDefs = useMemo<ColDef<JobApplication>[]>(
     () => [
-      {
-        headerName: "CV",
-        field: "cvFileName",
-        width: 120,
-        cellRenderer: CvCellRenderer,
-      },
       {
         headerName: "Job Title",
         field: "jobTitle",

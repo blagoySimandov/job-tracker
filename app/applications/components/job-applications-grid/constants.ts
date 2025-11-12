@@ -58,4 +58,10 @@ export const MOCK_IMPROVEMENT_TIPS = [
   "Add certifications or courses relevant to the position",
 ];
 
+export const CVS_COLLECTION = "cvs";
+export const APPLICATIONS_SUBCOLLECTION = "applications";
+
+export const getCvApplicationsPath = (cvId: string) =>
+  `${CVS_COLLECTION}/${cvId}/${APPLICATIONS_SUBCOLLECTION}`;
+
 export const JOB_APPLICATIONS_COLLECTION = "job-applications";

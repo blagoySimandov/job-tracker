@@ -3,7 +3,8 @@ export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 export const ACCEPTED_FILE_TYPES = {
   "application/pdf": [".pdf"],
 };
-export const JOB_APPLICATIONS_COLLECTION = "job-applications";
+
+export const CVS_COLLECTION = "cvs";
 
 export const ERROR_MESSAGES = {
   INVALID_TYPE: "Please upload a PDF file only.",

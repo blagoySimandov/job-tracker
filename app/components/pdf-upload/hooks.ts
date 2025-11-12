@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { ref, uploadBytes } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { storage, db } from "@/lib/firebase-config";
 import { UploadedPdf, PdfUploadError } from "./types";
 import {
   MAX_FILE_SIZE,
   ERROR_MESSAGES,
-  JOB_APPLICATIONS_COLLECTION,
+  CVS_COLLECTION,
 } from "./constants";
 
 export const usePdfUpload = () => {
+  const router = useRouter();
   const [uploadedPdf, setUploadedPdf] = useState<UploadedPdf | null>(null);
   const [error, setError] = useState<PdfUploadError | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -50,18 +52,18 @@ export const usePdfUpload = () => {
       const fileId = `${Date.now()}-${file.name}`;
       const storageRef = ref(
         storage,
-        `${JOB_APPLICATIONS_COLLECTION}/${fileId}`,
+        `${CVS_COLLECTION}/${fileId}`,
       );
 
       const snapshot = await uploadBytes(storageRef, file);
 
-      const uploadedAt = new Date();
+      const uploadedAt = Timestamp.now();
 
-      const docRef = await addDoc(collection(db, JOB_APPLICATIONS_COLLECTION), {
+      const docRef = await addDoc(collection(db, CVS_COLLECTION), {
         fileId,
         name: file.name,
         size: file.size,
-        uploadedAt: uploadedAt.toISOString(),
+        uploadedAt,
         storagePath: snapshot.ref.fullPath,
       });
 
@@ -70,10 +72,12 @@ export const usePdfUpload = () => {
         id: docRef.id,
         name: file.name,
         size: file.size,
-        uploadedAt,
+        uploadedAt: uploadedAt.toDate(),
       };
 
       setUploadedPdf(uploadedFile);
+
+      router.push(`/applications/${docRef.id}`);
     } catch (err) {
       setError({
         message: ERROR_MESSAGES.UPLOAD_FAILED,
@@ -83,7 +87,7 @@ export const usePdfUpload = () => {
     } finally {
       setIsUploading(false);
     }
-  }, []);
+  }, [router]);
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
