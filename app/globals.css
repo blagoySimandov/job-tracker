@@ -10,6 +10,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-sky-light: #8CE4FF;
+  --color-butter: #FEEE91;
+  --color-tangerine: #FFA239;
+  --color-coral: #FF5656;
 }
 
 @media (prefers-color-scheme: dark) {
