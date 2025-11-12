@@ -37,6 +37,7 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
   const [sidebarState, setSidebarState] = useState<{
     isOpen: boolean;
     jobTitle?: string;
+    improvementTips?: string;
   }>({ isOpen: false });
   const [filters, setFilters] = useState<FilterState>({
     status: "all",
@@ -74,8 +75,8 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
     [updateMutation]
   );
 
-  const handleShowImprovements = useCallback((jobTitle: string) => {
-    setSidebarState({ isOpen: true, jobTitle });
+  const handleShowImprovements = useCallback((jobTitle: string, improvementTips: string) => {
+    setSidebarState({ isOpen: true, jobTitle, improvementTips });
   }, []);
 
   const columnDefs = useMemo<ColDef<JobApplication>[]>(
@@ -143,7 +144,7 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleShowImprovements(params.data?.jobTitle)}
+            onClick={() => handleShowImprovements(params.data?.jobTitle, params.data?.improvementTips)}
           >
             What to Improve
           </Button>
@@ -209,6 +210,7 @@ export const JobApplicationsGrid = ({ cvId }: JobApplicationsGridProps) => {
         isOpen={sidebarState.isOpen}
         onClose={() => setSidebarState({ isOpen: false })}
         jobTitle={sidebarState.jobTitle}
+        improvementTips={sidebarState.improvementTips}
       />
     </div>
   );

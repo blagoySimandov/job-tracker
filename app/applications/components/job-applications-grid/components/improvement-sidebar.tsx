@@ -1,18 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { MOCK_IMPROVEMENT_TIPS } from "../constants";
+import ReactMarkdown from "react-markdown";
 
 interface ImprovementSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   jobTitle?: string;
+  improvementTips?: string;
 }
 
 export const ImprovementSidebar = ({
   isOpen,
   onClose,
   jobTitle,
+  improvementTips,
 }: ImprovementSidebarProps) => {
   if (!isOpen) return null;
 
@@ -38,20 +40,14 @@ export const ImprovementSidebar = ({
               </p>
             )}
 
-            <div className="space-y-4">
-              {MOCK_IMPROVEMENT_TIPS.map((tip, index) => (
-                <div
-                  key={index}
-                  className="rounded-lg border border-neutral-200 p-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-tangerine text-xs font-bold text-white">
-                      {index + 1}
-                    </div>
-                    <p className="text-sm text-neutral-700">{tip}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="prose prose-sm max-w-none">
+              {improvementTips ? (
+                <ReactMarkdown>{improvementTips}</ReactMarkdown>
+              ) : (
+                <p className="text-neutral-500 italic">
+                  No improvement tips available for this application.
+                </p>
+              )}
             </div>
           </div>
 

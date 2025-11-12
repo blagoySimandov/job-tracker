@@ -25,6 +25,7 @@ export interface JobApplication {
   notes: string;
   status: ApplicationStatus;
   compatibilityScore: number;
+  improvementTips: string;
   createdAt: Timestamp;
 }
 

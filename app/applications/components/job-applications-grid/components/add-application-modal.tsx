@@ -41,7 +41,9 @@ export const AddApplicationModal = ({
         <DialogHeader>
           <DialogTitle>Add Job Application</DialogTitle>
           <DialogDescription>
-            Paste the link to the job application below
+            {isLoading
+              ? "Analyzing job listing and your CV with AI..."
+              : "Paste the link to the job application below"}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -64,7 +66,7 @@ export const AddApplicationModal = ({
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading || !link.trim()}>
-              {isLoading ? "Adding..." : "Add"}
+              {isLoading ? "Analyzing with AI..." : "Add Application"}
             </Button>
           </div>
         </form>
